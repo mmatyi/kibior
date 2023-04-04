@@ -1,7 +1,7 @@
 Type: Package
 Date: 2023-04-03
 Package: kibior
-Version: 0.1.2.1
+Version: 0.1.2.2
 Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
