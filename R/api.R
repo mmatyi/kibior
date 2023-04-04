@@ -76,6 +76,9 @@ Kibior <- R6Class(
         # Private .pwd Elasticsearch auth password
         .pwd = NULL,
 
+        # Private .pwd Elasticsearch transport schema
+        .transport_schema = NULL,
+        
         # Private .connection Elstic connection, computed automatically when host or port are 
         #   changed
         .connection = NULL,
@@ -174,6 +177,7 @@ Kibior <- R6Class(
             private$.port <- NULL
             private$.user <- NULL
             private$.pwd <- NULL
+            private$.transport_schema <- NULL
         },
 
 
@@ -670,7 +674,8 @@ Kibior <- R6Class(
             private$.connection <- elastic::connect(host = self$host, 
                                                     port = self$port, 
                                                     user = self$user, 
-                                                    pwd = self$pwd)
+                                                    pwd = self$pwd,
+                                                    transport_schema = self$transport_schema)
             # test connection
             p <- self$ping()
             if(purrr::is_null(p)) stop("Connection to '", self$host, ":", self$port, "' cannot be established.")
