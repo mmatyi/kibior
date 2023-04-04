@@ -46,6 +46,7 @@
 #'  \code{port} \tab numeric \tab port of Elasticsearch server \tab 9200 \cr
 #'  \code{user} \tab character \tab if required by the server, the username for authentication \tab NULL \cr
 #'  \code{pwd} \tab character \tab if required by the server, the password for authentication \tab NULL \cr
+#'  \code{transport_schema} \tab character \tab the transport schema either "http" or "https"  \tab http \cr
 #'  \code{verbose} \tab logical \tab verbose mode \tab FALSE \cr
 #'  }
 #'
@@ -76,7 +77,7 @@ Kibior <- R6Class(
         # Private .pwd Elasticsearch auth password
         .pwd = NULL,
 
-        # Private .pwd Elasticsearch transport schema
+        # Private .transport_schema Elasticsearch transport schema
         .transport_schema = NULL,
         
         # Private .connection Elstic connection, computed automatically when host or port are 
@@ -1077,6 +1078,28 @@ Kibior <- R6Class(
             }
         },
 
+
+        #' @field transport_schema Access the Elasticsearch password.
+        transport_schema = function(value) {
+            "Access the Elasticsearch transport schema."
+            "Not mutable, initialize another client"
+            ""
+            "@examples"
+            "kc <- Kibior()"
+            "kc$transport_schema"
+            "kc$transport_schema <- 'foobar' # Error, read only"
+            ""
+            "@param value new transport_schema, not used"
+            "@return A string representing the transport schema used in connection"
+            
+            if(missing(value)) {
+                private$transport_schema
+            } else {
+                stop(private$err_active_is_read_only("$transport_schema"), call. = FALSE)
+            }
+        },
+        
+        
         #' @field connection Access the Elasticsearch connection object.
         connection = function(value) {
             "Access the Elasticsearch connection object. "
@@ -1400,6 +1423,7 @@ Kibior <- R6Class(
         #' @param port The target port (default: 9200).
         #' @param user If the server needs authentication, your username (default: NULL).
         #' @param pwd If the server needs authentication, your password (default: NULL).
+        #' @param transport_schema If the server uses SSL or not (default: "http").
         #' @param verbose The verbose mode (default: FALSE).
         #'
         #' @return a new instance/object of Kibior
@@ -1445,7 +1469,7 @@ Kibior <- R6Class(
         #' ))
         #' }
         #'
-        initialize = function(host = "localhost", port = 9200, user = NULL, pwd = NULL, verbose = getOption("verbose")){
+        initialize = function(host = "localhost", port = 9200, user = NULL, pwd = NULL, transport_schema = "http", verbose = getOption("verbose")){
             if(purrr::is_null(host)) host <- "localhost"
             if(!is.numeric(port)) stop(private$err_param_type_numeric("port"))
             if(!purrr::is_character(host)) stop(private$err_param_type_character("host"))
@@ -1467,6 +1491,8 @@ Kibior <- R6Class(
             private$.port <- port
             private$.user <- user
             private$.pwd <- pwd
+            private$.transport_schema <- transport_schema
+            
             # try to connect
             private$connect()
         },
