@@ -1032,7 +1032,7 @@ Kibior <- R6Class(
             "@return A string representing the Elasticsearch endpoint."
 
             if(missing(value)) {
-                paste0("http://", self$host, ":", self$port)
+                paste0("https://", self$host, ":", self$port)
             } else {
                 stop(private$err_active_is_read_only("$endpoint"), call. = FALSE)
             }
